@@ -1,6 +1,5 @@
 package org.example.chargingstationvalidationservice.controllers;
 
-import org.example.chargingstationvalidationservice.models.ChargingStation;
 import org.example.chargingstationvalidationservice.models.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +24,16 @@ class ChargingStationValidationControllerTest {
         String jsonRequest = "{\n" +
                 "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
                 "  \"isPublic\": false,\n" +
-                "  \"connectors\": []\n" +
+                "  \"connectors\": [\n" +
+                "    {\n" +
+                "      \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "      \"type\": \"CHAdeMO\",\n" +
+                "      \"maxPowerKw\": 30\n" +
+                "    }\n" +
+                "  ]\n" +
                 "}";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Accept-Language", "ua");
-        HttpEntity<String> entity = new HttpEntity<>(jsonRequest, headers);
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "ua");
 
         ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -41,18 +43,32 @@ class ChargingStationValidationControllerTest {
         assertEquals(expectedMessage, message);
     }
 
+
+
     @Test
     public void validDataWhenStationIsPublic() {
-        ChargingStation station = new ChargingStation();
-        station.setTitle("Test Station");
-        station.setDescription("Test Description");
-        station.setId(UUID.randomUUID().toString());
-        station.setIsPublic(true);
-        station.setAddress("test@mail.com");
-        station.setGeoCoordinates("46.430095, 30.696315");
-        station.setConnectors(Collections.emptyList());
-
-        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
+        String jsonRequest = "{\n" +
+                "    \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
+                "    \"title\": \"Station Title\",\n" +
+                "    \"description\": \"Station Description\",\n" +
+                "    \"address\": \"test@mail.com\",\n" +
+                "    \"geoCoordinates\": \"46.430095, 30.696315\",\n" +
+                "    \"isPublic\": true,\n" +
+                "    \"connectors\": [\n" +
+                "        {\n" +
+                "        \"id\": \"86b9b1bb-8664-4915-b496-517bbc351739\",\n" +
+                "        \"type\": \"CCS\",\n" +
+                "        \"maxPowerKw\": 50\n" +
+                "        },\n" +
+                "        {\n" +
+                "        \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "        \"type\": \"CHAdeMO\",\n" +
+                "        \"maxPowerKw\": 30\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "en");
+        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         String expectedMessage = "Correct";
@@ -62,14 +78,21 @@ class ChargingStationValidationControllerTest {
 
     @Test
     public void validDataWhenStationIsntPublic() {
-        ChargingStation station = new ChargingStation();
-        station.setTitle("Test Station");
-        station.setDescription("Test Description");
-        station.setId(UUID.randomUUID().toString());
-        station.setIsPublic(false);
-        station.setConnectors(Collections.emptyList());
+        String jsonRequest = "{\n" +
+                "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
+                "  \"isPublic\": false,\n" +
+                "  \"connectors\": [\n" +
+                "    {\n" +
+                "      \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "      \"type\": \"CHAdeMO\",\n" +
+                "      \"maxPowerKw\": 30\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
-        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "en");
+
+        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         String expectedMessage = "Correct";
@@ -79,16 +102,22 @@ class ChargingStationValidationControllerTest {
 
     @Test
     public void withInvalidAddress() {
-        ChargingStation station = new ChargingStation();
-        station.setTitle("Test Station");
-        station.setDescription("Test Description");
-        station.setId(UUID.randomUUID().toString());
-        station.setIsPublic(true);
-        station.setAddress("mail");
-        station.setGeoCoordinates("46.430095, 30.696315");
-        station.setConnectors(Collections.emptyList());
+        String jsonRequest = "{\n" +
+                "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
+                "  \"isPublic\": false,\n" +
+                "    \"address\": \"testmail.com\",\n" +
+                "  \"connectors\": [\n" +
+                "    {\n" +
+                "      \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "      \"type\": \"CHAdeMO\",\n" +
+                "      \"maxPowerKw\": 30\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
-        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "en");
+
+        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         String expectedMessage = "The email address does not match the mailing address template. ";
@@ -98,16 +127,22 @@ class ChargingStationValidationControllerTest {
 
     @Test
     public void withInvalidCoordinates() {
-        ChargingStation station = new ChargingStation();
-        station.setTitle("Test Station");
-        station.setDescription("Test Description");
-        station.setId(UUID.randomUUID().toString());
-        station.setIsPublic(true);
-        station.setAddress("test@mail.com");
-        station.setGeoCoordinates("46.430095 N, 30.696315 W");
-        station.setConnectors(Collections.emptyList());
+        String jsonRequest = "{\n" +
+                "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
+                "  \"isPublic\": false,\n" +
+                "    \"geoCoordinates\": \"46.430095N, 30.696315W\",\n" +
+                "  \"connectors\": [\n" +
+                "    {\n" +
+                "      \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "      \"type\": \"CHAdeMO\",\n" +
+                "      \"maxPowerKw\": 30\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
-        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "en");
+
+        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         String expectedMessage = "Incorrect coordinates. Try entering coordinates without letters. For example 46.430095, 30.696315. ";
@@ -117,16 +152,21 @@ class ChargingStationValidationControllerTest {
 
     @Test
     public void withInvalidId() {
-        ChargingStation station = new ChargingStation();
-        station.setTitle("Test Station");
-        station.setDescription("Test Description");
-        station.setId("smth");
-        station.setIsPublic(true);
-        station.setAddress("test@mail.com");
-        station.setGeoCoordinates("46.430095, 30.696315");
-        station.setConnectors(Collections.emptyList());
+        String jsonRequest = "{\n" +
+                "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc339\",\n" +
+                "  \"isPublic\": false,\n" +
+                "  \"connectors\": [\n" +
+                "    {\n" +
+                "      \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "      \"type\": \"CHAdeMO\",\n" +
+                "      \"maxPowerKw\": 30\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
-        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "en");
+
+        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         String expectedMessage = "You have entered an invalid ID. The ID must correspond to the form \"86b9b1bb-8614-4915-b496-517bbc351739\". ";
@@ -196,20 +236,40 @@ class ChargingStationValidationControllerTest {
 
     @Test
     public void withoutTittleWhenStationIsPublic() {
-        ChargingStation station = new ChargingStation();
-        station.setDescription("Test Description");
-        station.setId(UUID.randomUUID().toString());
-        station.setIsPublic(true);
-        station.setAddress("test@mail.com");
-        station.setGeoCoordinates("46.430095, 30.696315");
-        station.setConnectors(Collections.emptyList());
+        String jsonRequest = "{\n" +
+                "    \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
+                "    \"description\": \"Station Description\",\n" +
+                "    \"address\": \"test@mail.com\",\n" +
+                "    \"geoCoordinates\": \"46.430095, 30.696315\",\n" +
+                "    \"isPublic\": true,\n" +
+                "    \"connectors\": [\n" +
+                "        {\n" +
+                "        \"id\": \"86b9b1bb-8664-4915-b496-517bbc351739\",\n" +
+                "        \"type\": \"CCS\",\n" +
+                "        \"maxPowerKw\": 50\n" +
+                "        },\n" +
+                "        {\n" +
+                "        \"id\": \"86b9b1bb-8614-4915-b496-517bbc351788\",\n" +
+                "        \"type\": \"CHAdeMO\",\n" +
+                "        \"maxPowerKw\": 30\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        HttpEntity<String> entity = getHttpEntity(jsonRequest, "en");
 
-        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
+        ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", entity, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
         String expectedMessage = "Title cannot be empty. ";
         assertFalse(message.isEmpty());
         assertEquals(expectedMessage, message);
+    }
+
+    private HttpEntity<String> getHttpEntity(String jsonRequest, String language) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Accept-Language", language);
+        return new HttpEntity<>(jsonRequest, headers);
     }
 
 }

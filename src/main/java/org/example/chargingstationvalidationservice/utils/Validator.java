@@ -99,6 +99,9 @@ public class Validator {
 
     private void connectorValidation(List<Connector> connectors, Response response, ChargingStation station) {
         StringBuilder stringBuilder = new StringBuilder();
+        if (connectors.isEmpty()){
+            stringBuilder.append(String.format(Messages.getMessage("error.empty_connector_list"), station.getId()));
+        }
         for (Connector connector : connectors) {
             if (!(Validator.idIsValid(connector.getId()))) {
                 stringBuilder.append(String.format(Messages
