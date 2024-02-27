@@ -20,7 +20,7 @@ To test via postman, paste the below json line into the request body:
     "id": "86b9b1bb-8614-4915-b496-517bbc351739",
     "title": "Station Title",
     "description": "Station Description",
-    "address": "123 Main St, City, Country",
+    "address": "test@mail.com",
     "geoCoordinates": "46.430095, 30.696315",
     "isPublic": true,
     "connectors": [

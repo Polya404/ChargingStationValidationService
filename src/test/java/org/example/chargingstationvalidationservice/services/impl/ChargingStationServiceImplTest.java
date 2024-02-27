@@ -29,7 +29,7 @@ class ChargingStationServiceImplTest {
         ChargingStation chargingStation = new ChargingStation();
         List<Connector> connectors = List.of(new Connector(UUID.randomUUID().toString(), "CCS", 30, chargingStation));
         chargingStation.setId(UUID.randomUUID().toString());
-        chargingStation.setAddress("123 Main St, City, Country");
+        chargingStation.setAddress("test@mail.com");
         chargingStation.setTitle("Something");
         chargingStation.setDescription("Description");
         chargingStation.setIsPublic(true);

@@ -8,10 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.*;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.*;
 
@@ -52,7 +48,7 @@ class ChargingStationValidationControllerTest {
         station.setDescription("Test Description");
         station.setId(UUID.randomUUID().toString());
         station.setIsPublic(true);
-        station.setAddress("123 Main St, City, Country");
+        station.setAddress("test@mail.com");
         station.setGeoCoordinates("46.430095, 30.696315");
         station.setConnectors(Collections.emptyList());
 
@@ -88,14 +84,14 @@ class ChargingStationValidationControllerTest {
         station.setDescription("Test Description");
         station.setId(UUID.randomUUID().toString());
         station.setIsPublic(true);
-        station.setAddress("City, Country");
+        station.setAddress("mail");
         station.setGeoCoordinates("46.430095, 30.696315");
         station.setConnectors(Collections.emptyList());
 
         ResponseEntity<Response> responseEntity = restTemplate.postForEntity("/validate", station, Response.class);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         String message = Objects.requireNonNull(responseEntity.getBody()).getMessage();
-        String expectedMessage = "Incorrect address. The address must contain the country, city, street and number. ";
+        String expectedMessage = "The email address does not match the mailing address template. ";
         assertFalse(message.isEmpty());
         assertEquals(expectedMessage, message);
     }
@@ -107,7 +103,7 @@ class ChargingStationValidationControllerTest {
         station.setDescription("Test Description");
         station.setId(UUID.randomUUID().toString());
         station.setIsPublic(true);
-        station.setAddress("123 Main St, City, Country");
+        station.setAddress("test@mail.com");
         station.setGeoCoordinates("46.430095 N, 30.696315 W");
         station.setConnectors(Collections.emptyList());
 
@@ -126,7 +122,7 @@ class ChargingStationValidationControllerTest {
         station.setDescription("Test Description");
         station.setId("smth");
         station.setIsPublic(true);
-        station.setAddress("123 Main St, City, Country");
+        station.setAddress("test@mail.com");
         station.setGeoCoordinates("46.430095, 30.696315");
         station.setConnectors(Collections.emptyList());
 
@@ -144,7 +140,7 @@ class ChargingStationValidationControllerTest {
                 "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
                 "  \"title\": \"Station Title\",\n" +
                 "  \"description\": \"Station Description\",\n" +
-                "  \"address\": \"123 Main St, City, Country\",\n" +
+                "  \"address\": \"test@mail.com\",\n" +
                 "  \"geoCoordinates\": \"46.430095, 30.696315\",\n" +
                 "  \"isPublic\": true,\n" +
                 "  \"connectors\": [\n" +
@@ -174,7 +170,7 @@ class ChargingStationValidationControllerTest {
                 "  \"id\": \"86b9b1bb-8614-4915-b496-517bbc351739\",\n" +
                 "  \"title\": \"Station Title\",\n" +
                 "  \"description\": \"Station Description\",\n" +
-                "  \"address\": \"123 Main St, City, Country\",\n" +
+                "  \"address\": \"test@mail.com\",\n" +
                 "  \"geoCoordinates\": \"46.430095, 30.696315\",\n" +
                 "  \"isPublic\": true,\n" +
                 "  \"connectors\": [\n" +
@@ -204,7 +200,7 @@ class ChargingStationValidationControllerTest {
         station.setDescription("Test Description");
         station.setId(UUID.randomUUID().toString());
         station.setIsPublic(true);
-        station.setAddress("123 Main St, City, Country");
+        station.setAddress("test@mail.com");
         station.setGeoCoordinates("46.430095, 30.696315");
         station.setConnectors(Collections.emptyList());
 

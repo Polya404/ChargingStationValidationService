@@ -58,11 +58,11 @@ class ValidatorTest {
         String emptyAddress = "";
         String nullAddress = null;
         String invalidAddress = "Something";
-        String validAddress = "Ukraine, Lviv, B.Hmelnitskoho 24";
+        String validAddress = "test@mail.com";
         station.setAddress(emptyAddress);
-        Assertions.assertFalse(Validator.addressIsValid(station));
+        Assertions.assertFalse(Validator.requiredFieldIfPublic(station));
         station.setAddress(nullAddress);
-        Assertions.assertFalse(Validator.addressIsValid(station));
+        Assertions.assertFalse(Validator.requiredFieldIfPublic(station));
         station.setAddress(invalidAddress);
         Assertions.assertFalse(Validator.addressIsValid(station));
         station.setAddress(validAddress);
@@ -109,9 +109,9 @@ class ValidatorTest {
         station.setGeoCoordinates(invalidCoordinates4);
         Assertions.assertFalse(Validator.geoCoordinatesIsValid(station));
         station.setGeoCoordinates(emptyCoordinates);
-        Assertions.assertFalse(Validator.geoCoordinatesIsValid(station));
+        Assertions.assertFalse(Validator.requiredFieldIfPublic(station));
         station.setGeoCoordinates(nullCoordinates);
-        Assertions.assertFalse(Validator.geoCoordinatesIsValid(station));
+        Assertions.assertFalse(Validator.requiredFieldIfPublic(station));
     }
 
     @Test

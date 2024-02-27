@@ -26,7 +26,7 @@ class ConnectorServiceImplTest {
     @Test
     void addConnectors() {
         Connector connector = new Connector(UUID.randomUUID().toString(), "type1", 90,
-                new ChargingStation(UUID.randomUUID().toString(), "test", "test", "123 Main St, City, Country",
+                new ChargingStation(UUID.randomUUID().toString(), "test", "test", "test@mail.com",
                         "46.430095, 30.696315", true, new ArrayList<>()));
         connectorService.addConnectors(List.of(connector));
         verify(connectorRepository, times(1)).saveAll(List.of(connector));

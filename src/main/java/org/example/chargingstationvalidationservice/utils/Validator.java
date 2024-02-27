@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class Validator {
     Pattern UUID_REGEX =
             Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-    Pattern ADDRESS_REGEX = Pattern.compile(".*\\d.*");
+    Pattern ADDRESS_REGEX = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
     Pattern COORDINATE_REGEX = Pattern.compile("^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$");
 
     public void validateDataFromRequest(ChargingStation chargingStation, Response response) {
